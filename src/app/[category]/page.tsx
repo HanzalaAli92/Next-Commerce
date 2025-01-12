@@ -26,7 +26,7 @@ export default async function CategoryPage({
   params: { category: string };
 }) {
   // Awaiting params to resolve before use
-  const { category } = await params;
+  const { category } = params;
 
   const data: simplifiedProduct[] = await getData(category);
 
