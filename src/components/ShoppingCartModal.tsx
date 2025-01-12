@@ -9,7 +9,7 @@ import Image from "next/image";
 import { useShoppingCart } from "use-shopping-cart"
 import { Button } from "./ui/button";
 
-export default function shoppingCartModal() {
+export default function ShoppingCartModal() {
     const { 
         cartCount, 
         shouldDisplayCart, 
