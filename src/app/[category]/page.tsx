@@ -3,39 +3,46 @@ import { simplifiedProduct } from "../interface";
 import Image from "next/image";
 import Link from "next/link";
 
-async function getData(category : string) {
-   const query =  `*[_type == 'product' && category->name == "${category}"]{
-        _id,
-        "imageUrl": images[0].asset->url,
-        price,
-        name,
-        "slug": slug.current,
-        "categoryName": category->name,
-      }`;
+async function getData(category: string) {
+  const query = `*[_type == 'product' && category->name == "${category}"]{
+    _id,
+    "imageUrl": images[0].asset->url,
+    price,
+    name,
+    "slug": slug.current,
+    "categoryName": category->name,
+  }`;
 
-    const data = await client.fetch(query)
+  const data = await client.fetch(query);
 
-    return data;
+  return data;
 }
 
 export const dynamic = 'force-static'; // Optional: If you're not using server-side props
 
-export default async function CategoryPage({
-  params,
-}: {
-  params: { category: string };
-}) {
-  // Awaiting params to resolve before use
+export async function getStaticProps({ params }: { params: { category: string } }) {
   const { category } = params;
-
   const data: simplifiedProduct[] = await getData(category);
 
+  return {
+    props: { data },
+  };
+}
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: 'blocking', // Modify according to your needs
+  };
+}
+
+export default function CategoryPage({ data }: { data: simplifiedProduct[] }) {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            Our Products for {category}
+            Our Products for {data[0]?.categoryName || 'Category'}
           </h2>
         </div>
 
@@ -72,6 +79,9 @@ export default async function CategoryPage({
     </div>
   );
 }
+
+
+
 // export default async function CategoryPage({
 //     params
 // } : {
